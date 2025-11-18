@@ -15,13 +15,7 @@
     {{-- Preload de recursos críticos --}}
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" as="style">
     <link rel="dns-prefetch" href="https://fonts.googleapis.com">
-    
-    @php($hasViteManifest = file_exists(public_path('build/manifest.json')))
-    @if($hasViteManifest)
-        @vite(['resources/css/app.css', 'resources/js/app.js'], 'build', ['nonce' => app('csp-nonce')])
-    @else
-        <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
-    @endif
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('styles')
     
     {{-- Fontes e ícones - carregamento otimizado --}}
