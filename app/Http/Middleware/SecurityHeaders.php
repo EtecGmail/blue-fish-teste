@@ -35,10 +35,29 @@ class SecurityHeaders
      */
     private function addSecurityHeaders(Response $response): void
     {
-        // Content Security Policy (CSP)
-        $response->headers->set('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self'; media-src 'self'; object-src 'none'; child-src 'none'; form-action 'self'; base-uri 'self'; frame-ancestors 'none';");
+        // Gerar um nonce único para cada requisição.
+        $nonce = base64_encode(random_bytes(16));
+        // Disponibilizar o nonce para a aplicação (ex: para ser usado no Blade com Vite).
+        app()->instance('csp-nonce', $nonce);
 
-        // Strict Transport Security (HSTS) - HTTPS apenas
+        // Content Security Policy (CSP) com nonce
+        $csp = [
+            "default-src 'self'",
+            "script-src 'self' 'nonce-{$nonce}'", // Permite scripts com o nonce gerado
+            "style-src 'self' 'unsafe-inline'", // Manter unsafe-inline para estilos por enquanto é pragmático
+            "img-src 'self' data: https:",
+            "font-src 'self' data:",
+            "connect-src 'self'",
+            "media-src 'self'",
+            "object-src 'none'",
+            "child-src 'none'",
+            "form-action 'self'",
+            "base-uri 'self'",
+            "frame-ancestors 'none'",
+        ];
+        $response->headers->set('Content-Security-Policy', implode('; ', $csp));
+
+        // Strict Transport Security (HSTS)
         $response->headers->set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
 
         // X-Frame-Options - Previne clickjacking
@@ -47,17 +66,11 @@ class SecurityHeaders
         // X-Content-Type-Options - Previne MIME type sniffing
         $response->headers->set('X-Content-Type-Options', 'nosniff');
 
-        // X-XSS-Protection - Proteção contra XSS (legado, mas útil)
-        $response->headers->set('X-XSS-Protection', '1; mode=block');
-
-        // Referrer Policy - Controla informações do referrer
-        $response->headers->set('Referrer-Policy', 'strict-origin-when-cross-origin');
+        // Referrer Policy - Mais restritivo
+        $response->headers->set('Referrer-Policy', 'no-referrer');
 
         // Permissions Policy - Controla recursos do navegador
         $response->headers->set('Permissions-Policy', 'geolocation=(), microphone=(), camera=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=()');
-
-        // X-Permitted-Cross-Domain-Policies - Previne carregamento de conteúdo cross-domain
-        $response->headers->set('X-Permitted-Cross-Domain-Policies', 'none');
 
         // Cache Control - Previne cache de dados sensíveis
         if ($this->shouldPreventCache($response)) {
@@ -69,6 +82,8 @@ class SecurityHeaders
         // Remove headers que revelam informações do servidor
         $response->headers->remove('X-Powered-By');
         $response->headers->remove('Server');
+        // Remove header obsoleto de proteção XSS
+        $response->headers->remove('X-XSS-Protection');
     }
 
     /**

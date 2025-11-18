@@ -18,7 +18,7 @@
     
     @php($hasViteManifest = file_exists(public_path('build/manifest.json')))
     @if($hasViteManifest)
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @vite(['resources/css/app.css', 'resources/js/app.js'], 'build', ['nonce' => app('csp-nonce')])
     @else
         <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
     @endif
