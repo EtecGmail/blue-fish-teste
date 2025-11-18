@@ -499,6 +499,20 @@ p {
     box-shadow: var(--shadow-soft);
 }
 
+@media (max-width: 767.98px) {
+    .navbar__menu {
+        display: none;
+    }
+
+    .navbar[data-open="true"] .navbar__menu {
+        display: block;
+    }
+
+    .navbar__toggle {
+        display: inline-flex;
+    }
+}
+
 @media (min-width: 768px) {
     .navbar__inner {
         min-height: 5.25rem;

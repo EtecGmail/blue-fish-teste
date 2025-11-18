@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Domain\Vendas\Actions\ProcessarVendaAction;
 use App\Http\Requests\VendaStoreRequest;
 use App\Services\VendaService;
 use App\Services\ProdutoService;
@@ -25,14 +26,14 @@ class VendaController extends Controller
         return view('vendas.index', compact('vendas'));
     }
 
-    public function store(VendaStoreRequest $request)
+    public function store(VendaStoreRequest $request, ProcessarVendaAction $processarVenda)
     {
         try {
             $validated = $request->validated();
             
             $produto = $this->produtoService->buscarProdutoAtivo($validated['produto_id']);
             
-            $venda = $this->vendaService->processarVenda(
+            $venda = $processarVenda->execute(
                 auth()->user(),
                 $produto,
                 $validated['quantidade']

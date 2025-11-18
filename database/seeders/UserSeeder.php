@@ -10,16 +10,13 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        User::updateOrCreate(
-            ['email' => 'teste@bluefish.com'],
-            [
-                'name' => 'Usuário Teste',
-                'telefone' => '11999999999',
-                'aceitou_termos_em' => now(),
-                'password' => Hash::make('123456'),
-                'is_admin' => false,
-            ]
-        );
+        // Cria um usuário de teste usando a factory para garantir dados anônimos e consistentes.
+        User::factory()->create([
+            'name' => 'Usuário de Teste',
+            'email' => 'teste@bluefish.com',
+            'password' => Hash::make('123456'),
+            'is_admin' => false,
+        ]);
 
         $adminEmail = env('ADMIN_USER_EMAIL', 'admin@bluefish.com');
         $adminPassword = env('ADMIN_USER_PASSWORD', 'admin123');
