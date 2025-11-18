@@ -6,14 +6,15 @@
   - Semântica HTML5 apropriada
   - ARIA labels para leitores de tela
   - Estados visuais claros
-  
-  @props [
-    'type' => 'info', // success, warning, error, info
-    'title' => null,
-    'dismissible' => false,
-    'icon' => true
-  ]
+
 --}}
+
+@props([
+  'type' => 'info', // success, warning, error, info
+  'title' => null,
+  'dismissible' => false,
+  'icon' => true,
+])
 
 @php
   $alertTypes = [

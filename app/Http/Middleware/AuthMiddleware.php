@@ -17,7 +17,7 @@ class AuthMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         // Verifica se o usuário está autenticado
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             // Se não estiver autenticado, redireciona para login
             return redirect()->route('login.form')->with('erro', 'Você precisa fazer login para acessar esta página.');
         }
@@ -25,4 +25,3 @@ class AuthMiddleware
         return $next($request);
     }
 }
-

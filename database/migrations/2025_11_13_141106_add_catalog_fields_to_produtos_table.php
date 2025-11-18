@@ -12,15 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('produtos', function (Blueprint $table) {
-            if (!Schema::hasColumn('produtos', 'categoria')) {
+            if (! Schema::hasColumn('produtos', 'categoria')) {
                 $table->string('categoria')->nullable()->after('imagem');
             }
 
-            if (!Schema::hasColumn('produtos', 'estoque')) {
+            if (! Schema::hasColumn('produtos', 'estoque')) {
                 $table->unsignedInteger('estoque')->nullable()->after('categoria');
             }
 
-            if (!Schema::hasColumn('produtos', 'status')) {
+            if (! Schema::hasColumn('produtos', 'status')) {
                 $table->string('status')->default('ativo')->after('estoque');
             }
         });

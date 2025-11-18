@@ -19,7 +19,7 @@ class AuthController extends Controller
     {
         try {
             $credentials = $request->validated();
-            
+
             $key = Str::lower($credentials['email']).'|'.$request->ip();
 
             if (RateLimiter::tooManyAttempts($key, 5)) {
@@ -59,7 +59,7 @@ class AuthController extends Controller
             }
 
             return redirect()->intended('/')->with('sucesso', 'Login realizado com sucesso!');
-            
+
         } catch (ValidationException $e) {
             throw $e;
         } catch (\Exception $e) {
@@ -83,7 +83,7 @@ class AuthController extends Controller
             ]);
 
             return redirect('/login')->with('sucesso', 'Cadastro realizado com sucesso!');
-            
+
         } catch (\Exception $e) {
             return back()
                 ->withInput()

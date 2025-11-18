@@ -17,7 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
             'security.headers' => \App\Http\Middleware\SecurityHeaders::class,
         ]);
-        
+
         // Aplicar security headers globalmente
         $middleware->append(\App\Http\Middleware\SecurityHeaders::class);
     })

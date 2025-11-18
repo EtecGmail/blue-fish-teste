@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Contato;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 
 class ContatoController extends Controller
@@ -15,7 +15,7 @@ class ContatoController extends Controller
             'email' => 'required|email',
             'telefone' => 'nullable',
             'assunto' => 'required',
-            'mensagem' => 'required'
+            'mensagem' => 'required',
         ]);
 
         Contato::create([

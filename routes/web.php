@@ -1,11 +1,11 @@
 <?php
 
+use App\Http\Controllers\Admin\ProductController as AdminProductController;
+use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ContatoController;
 use App\Http\Controllers\ProdutoController;
-use App\Http\Controllers\AdminController;
-use App\Http\Controllers\Admin\ProductController as AdminProductController;
-use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\VendaController;
 use Illuminate\Support\Facades\Route;
 

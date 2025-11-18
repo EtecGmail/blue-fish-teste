@@ -6,32 +6,33 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-uses(RefreshDatabase::class);
+class DashboardAccessTest extends TestCase
+{
+    use RefreshDatabase;
 
-test('convidado deve ser redirecionado da dashboard admin para a página de login', function () {
-    $response = $this->get(route('admin.dashboard'));
-    $response->assertRedirect(route('login.form'));
-});
+    public function test_guest_is_redirected_from_admin_dashboard(): void
+    {
+        $response = $this->get(route('admin.dashboard'));
 
-test('usuário autenticado não admin não pode acessar a dashboard admin', function () {
-    // Cria um usuário comum (não admin)
-    $user = User::factory()->create();
+        $response->assertRedirect(route('login.form'));
+    }
 
-    // Tenta acessar a dashboard como o usuário comum
-    $response = $this->actingAs($user)->get(route('admin.dashboard'));
+    public function test_non_admin_user_cannot_access_admin_dashboard(): void
+    {
+        $user = User::factory()->create();
 
-    // Espera um status "Forbidden"
-    $response->assertForbidden();
-});
+        $response = $this->actingAs($user)->get(route('admin.dashboard'));
 
-test('usuário admin autenticado pode acessar a dashboard admin', function () {
-    // Cria um usuário admin
-    $admin = User::factory()->admin()->create();
+        $response->assertForbidden();
+    }
 
-    // Tenta acessar a dashboard como o admin
-    $response = $this->actingAs($admin)->get(route('admin.dashboard'));
+    public function test_admin_can_access_dashboard(): void
+    {
+        $admin = User::factory()->admin()->create();
 
-    // Espera um status "OK" e a visualização da view correta
-    $response->assertStatus(200);
-    $response->assertViewIs('admin.dashboard');
-});
+        $response = $this->actingAs($admin)->get(route('admin.dashboard'));
+
+        $response->assertOk();
+        $response->assertViewIs('admin.dashboard');
+    }
+}

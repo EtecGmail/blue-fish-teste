@@ -95,6 +95,8 @@
     {{-- Rodapé institucional como componente reutilizável --}}
     <x-common.footer />
 
+    @include('cookie-consent::index')
+
     @yield('scripts')
 </body>
 </html>

@@ -18,6 +18,7 @@ class ProductController extends Controller
     {
         $this->produtoService = $produtoService;
     }
+
     public function index(Request $request): View
     {
         $query = Produto::query();
@@ -71,7 +72,7 @@ class ProductController extends Controller
             return redirect()
                 ->route('admin.products.index')
                 ->with('sucesso', 'Produto cadastrado com sucesso!');
-                
+
         } catch (\Exception $e) {
             return back()
                 ->withInput()
@@ -93,7 +94,7 @@ class ProductController extends Controller
             return redirect()
                 ->route('admin.products.index')
                 ->with('sucesso', 'Produto atualizado com sucesso!');
-                
+
         } catch (\Exception $e) {
             return back()
                 ->withInput()
@@ -109,7 +110,7 @@ class ProductController extends Controller
             return redirect()
                 ->route('admin.products.index')
                 ->with('sucesso', 'Produto removido com sucesso.');
-                
+
         } catch (\Exception $e) {
             return back()
                 ->with('erro', $e->getMessage() ?: 'Ocorreu um erro ao remover o produto.');
