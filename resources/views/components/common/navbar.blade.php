@@ -1,117 +1,152 @@
 {{--
-  Componente Navbar - Baseado no Guia Yuri Garcia Pardinho
-  
-  Principios aplicados:
+  Navbar principal - alinhada ao design system Bluefish
   - Acessibilidade WCAG 2.2 AA
-  - Mobile-first design
-  - Semantic HTML5
-  - ARIA labels apropriados
-  - Foco visível para navegação por teclado
+  - Mobile-first com hamburguer em 768px
+  - Semântica HTML5 com landmarks e ARIA
 --}}
-
-<nav class="navbar" role="navigation" aria-label="Navegação principal">
-  <div class="navbar__container">
-    {{-- Logo com link para home --}}
-    <div class="navbar__brand">
-      <a href="{{ route('home') }}" class="navbar__logo" aria-label="Página inicial">
-        <img src="{{ asset('img/logo.svg') }}" alt="Logotipo" width="120" height="40">
-      </a>
-    </div>
-
-    {{-- Menu principal desktop --}}
-    <div class="navbar__menu" id="navbar-menu">
-      <ul class="navbar__nav" role="menubar">
-        <li class="navbar__item" role="none">
-          <a href="{{ route('produtos.index') }}" 
-             class="navbar__link {{ request()->routeIs('produtos.*') ? 'navbar__link--active' : '' }}"
-             role="menuitem"
-             aria-current="{{ request()->routeIs('produtos.*') ? 'page' : 'false' }}">
-            Produtos
-          </a>
-        </li>
-        <li class="navbar__item" role="none">
-          <a href="{{ route('vendas.index') }}" 
-             class="navbar__link {{ request()->routeIs('vendas.*') ? 'navbar__link--active' : '' }}"
-             role="menuitem"
-             aria-current="{{ request()->routeIs('vendas.*') ? 'page' : 'false' }}">
-            Vendas
-          </a>
-        </li>
-        <li class="navbar__item" role="none">
-          <a href="{{ route('contato.index') }}" 
-             class="navbar__link {{ request()->routeIs('contato.*') ? 'navbar__link--active' : '' }}"
-             role="menuitem"
-             aria-current="{{ request()->routeIs('contato.*') ? 'page' : 'false' }}">
-            Contato
-          </a>
-        </li>
-        
-        {{-- Links adicionais para usuários autenticados --}}
-        @auth
-          <li class="navbar__item" role="none">
-            <a href="{{ route('admin.dashboard') }}" 
-               class="navbar__link {{ request()->routeIs('admin.*') ? 'navbar__link--active' : '' }}"
-               role="menuitem"
-               aria-current="{{ request()->routeIs('admin.*') ? 'page' : 'false' }}">
-              Admin
-            </a>
-          </li>
-        @endauth
-      </ul>
-    </div>
-
-    {{-- Area do usuário --}}
-    <div class="navbar__user-area">
-      @auth
-        {{-- Usuário autenticado --}}
-        <div class="navbar__user-menu">
-          <button class="navbar__user-toggle" 
-                  id="user-menu-toggle"
-                  aria-expanded="false"
-                  aria-haspopup="true"
-                  aria-label="Menu do usuário">
-            <span class="navbar__user-name">{{ auth()->user()->name }}</span>
-            <svg class="navbar__user-icon" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-            </svg>
-          </button>
-          
-          <div class="navbar__user-dropdown" id="user-dropdown" hidden>
-            <a href="{{ route('logout') }}" 
-               class="navbar__user-link"
-               onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-              Sair
-            </a>
-            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-              @csrf
-            </form>
-          </div>
-        </div>
-      @else
-        {{-- Visitante --}}
-        <div class="navbar__auth">
-          <a href="{{ route('login') }}" class="navbar__link navbar__link--outline">
-            Entrar
-          </a>
-          <a href="{{ route('register') }}" class="navbar__btn navbar__btn--primary">
-            Cadastrar
-          </a>
-        </div>
-      @endauth
-    </div>
+<header class="navbar" id="navbar" role="banner" data-navbar data-open="false">
+  <div class="navbar__inner">
+    {{-- Logo e assinatura da marca --}}
+    <a href="{{ url('/') }}" class="navbar__brand" aria-label="Bluefish - Página inicial">
+      <img src="{{ asset('img/pexe.png') }}"
+           alt="Bluefish"
+           width="120"
+           height="40"
+           loading="eager">
+      <div class="navbar__brand-copy">
+        <span class="navbar__brand-name">Bluefish</span>
+        <span class="navbar__brand-tagline">Frescor e logística inteligente para o seu negócio</span>
+      </div>
+    </a>
 
     {{-- Botão mobile hamburger --}}
-    <button class="navbar__toggle" 
-            id="navbar-toggle"
+    <button type="button"
+            class="navbar__toggle"
+            data-navbar-toggle
             aria-expanded="false"
-            aria-controls="navbar-menu"
-            aria-label="Alternar menu de navegação">
-      <span class="navbar__toggle-line"></span>
-      <span class="navbar__toggle-line"></span>
-      <span class="navbar__toggle-line"></span>
+            aria-controls="menu-principal"
+            aria-label="Alternar navegação">
+      <span class="navbar__toggle-icon" aria-hidden="true"></span>
     </button>
-  </div>
-</nav>
 
-{{-- Skip link para conteúdo principal --}}
-<a href="#main-content" class="skip-link">Ir para o conteúdo principal</a>
+    {{-- Menu de navegação principal --}}
+    <nav class="navbar__menu" id="menu-principal" aria-label="Menu principal">
+      <div class="navbar__menu-content">
+        <ul class="navbar__list" role="menubar">
+          {{-- Link: Início --}}
+          <li role="none">
+            <a href="{{ route('home') }}"
+               class="navbar__link {{ request()->routeIs('home') ? 'is-active' : '' }}"
+               role="menuitem"
+               @if(request()->routeIs('home')) aria-current="page" @endif>
+              Início
+            </a>
+          </li>
+
+          {{-- Link: Produtos --}}
+          <li role="none">
+            <a href="{{ route('produtos.index') }}"
+               class="navbar__link {{ request()->routeIs('produtos.*') ? 'is-active' : '' }}"
+               role="menuitem"
+               @if(request()->routeIs('produtos.*')) aria-current="page" @endif>
+              Nossa Seleção
+            </a>
+          </li>
+
+          {{-- Link: Contato --}}
+          <li role="none">
+            <a href="{{ route('contato.form') }}"
+               class="navbar__link {{ request()->routeIs('contato.*') ? 'is-active' : '' }}"
+               role="menuitem"
+               @if(request()->routeIs('contato.*')) aria-current="page" @endif>
+              Fale Conosco
+            </a>
+          </li>
+
+          {{-- Links estáticos --}}
+          <li role="none">
+            <a href="#receitas" class="navbar__link" role="menuitem">Receitas</a>
+          </li>
+          <li role="none">
+            <a href="#sobre" class="navbar__link" role="menuitem">Sobre</a>
+          </li>
+
+          {{-- Links autenticados --}}
+          @auth
+            <li role="none">
+              <a href="{{ route('vendas.index') }}"
+                 class="navbar__link {{ request()->routeIs('vendas.*') ? 'is-active' : '' }}"
+                 role="menuitem"
+                 @if(request()->routeIs('vendas.*')) aria-current="page" @endif>
+                Minhas Compras
+              </a>
+            </li>
+
+            <li role="none">
+              <a href="{{ route('admin.dashboard') }}"
+                 class="navbar__link {{ request()->routeIs('admin.*') ? 'is-active' : '' }}"
+                 role="menuitem"
+                 @if(request()->routeIs('admin.*')) aria-current="page" @endif>
+                Painel
+              </a>
+            </li>
+          @endauth
+        </ul>
+
+        <div class="navbar__meta" role="presentation">
+          <p class="navbar__status">
+            <span class="navbar__pill">
+              <i class="fas fa-temperature-low" aria-hidden="true"></i>
+              Cadeia do frio ativa
+            </span>
+            <span>Equipe dedicada para pedidos, rastreamento e suporte em todo o Brasil.</span>
+          </p>
+
+          {{-- Área de ações do usuário --}}
+          <div class="navbar__actions" role="region" aria-label="Ações do usuário">
+            @auth
+              {{-- Usuário autenticado --}}
+              <div class="user-welcome">
+                <span class="welcome-message" role="status" aria-live="polite">
+                  Olá, <strong>{{ auth()->user()->name }}</strong>! Aproveite o melhor do mar.
+                </span>
+
+                <form action="{{ route('logout') }}" method="POST" class="logout-form">
+                  @csrf
+                  <button type="submit" class="logout-btn" aria-label="Sair da conta">
+                    <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+                    <span>Sair</span>
+                  </button>
+                </form>
+              </div>
+            @else
+              {{-- Visitante - Botões de autenticação --}}
+              <div class="auth-buttons">
+                <x-ui.button href="{{ route('login.form') }}"
+                            variant="outline"
+                            size="small"
+                            icon="arrow-right"
+                            iconPosition="right">
+                  Entrar
+                </x-ui.button>
+
+                <x-ui.button href="{{ route('register.form') }}"
+                            variant="primary"
+                            size="small"
+                            icon="plus"
+                            iconPosition="right">
+                  Criar conta
+                </x-ui.button>
+              </div>
+            @endauth
+
+            <a href="{{ route('contato.form') }}" class="navbar__cta-link">
+              <span>Solicitar cotação</span>
+              <i class="fas fa-arrow-right" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </div>
+</header>
