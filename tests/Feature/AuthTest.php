@@ -20,7 +20,7 @@ class AuthTest extends TestCase
     {
         $response = $this->post('/login', [
             'email' => 'wrong@example.com',
-            'senha' => 'secret',
+            'password' => 'secret',
         ]);
 
         $response->assertSessionHasErrors();
@@ -29,13 +29,11 @@ class AuthTest extends TestCase
 
     public function test_login_succeeds_and_access_protected_route(): void
     {
-        $user = User::factory()->create([
-            'password' => 'password',
-        ]);
+        $user = User::factory()->create();
 
         $response = $this->post('/login', [
             'email' => $user->email,
-            'senha' => 'password',
+            'password' => 'password',
         ]);
 
         $response->assertRedirect('/');
@@ -51,13 +49,11 @@ class AuthTest extends TestCase
 
     public function test_logout_invalidates_session(): void
     {
-        $user = User::factory()->create([
-            'password' => 'password',
-        ]);
+        $user = User::factory()->create();
 
         $this->post('/login', [
             'email' => $user->email,
-            'senha' => 'password',
+            'password' => 'password',
         ]);
 
         $this->post('/logout')->assertRedirect('/');

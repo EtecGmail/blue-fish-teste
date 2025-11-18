@@ -18,15 +18,15 @@ class UserSeeder extends Seeder
             'is_admin' => false,
         ]);
 
-        $adminEmail = env('ADMIN_USER_EMAIL', 'admin@bluefish.com');
-        $adminPassword = env('ADMIN_USER_PASSWORD', 'admin123');
-        $adminName = env('ADMIN_USER_NAME', 'Administrador Bluefish');
+        $adminEmail = config('admin.user_email');
+        $adminPassword = config('admin.user_password');
+        $adminName = config('admin.user_name');
 
         User::updateOrCreate(
             ['email' => $adminEmail],
             [
                 'name' => $adminName,
-                'telefone' => env('ADMIN_USER_PHONE', '11988887777'),
+                'telefone' => config('admin.user_phone'),
                 'aceitou_termos_em' => now(),
                 'password' => Hash::make($adminPassword),
                 'is_admin' => true,

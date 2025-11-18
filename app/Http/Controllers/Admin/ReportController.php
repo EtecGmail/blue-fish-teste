@@ -50,13 +50,14 @@ class ReportController extends Controller
                 $handle = fopen('php://output', 'w');
                 fprintf($handle, "\xEF\xBB\xBF");
                 $header = ['Produto', 'Cliente', 'Quantidade', 'Valor (R$)', 'Status', 'Data'];
-                fwrite($handle, implode("\t", $header) . "\r\n");
+                fwrite($handle, implode("\t", $header)."\r\n");
                 foreach ($dados as $linha) {
                     $linha = array_map(function ($valor) {
                         $valor = (string) $valor;
+
                         return str_replace(["\t", "\r", "\n"], ' ', $valor);
                     }, $linha);
-                    fwrite($handle, implode("\t", $linha) . "\r\n");
+                    fwrite($handle, implode("\t", $linha)."\r\n");
                 }
                 fclose($handle);
             };
@@ -64,7 +65,7 @@ class ReportController extends Controller
             return response()->stream($callback, 200, $headers);
         }
 
-        $options = new Options();
+        $options = new Options;
         $options->set('isRemoteEnabled', true);
         $options->set('isHtml5ParserEnabled', true);
         $dompdf = new Dompdf($options);

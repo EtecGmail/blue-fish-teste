@@ -32,7 +32,7 @@ class ProcessarVendaAction
                     'user_id' => $user->id,
                     'produto_id' => $produto->id,
                     'quantidade' => $quantidade,
-                    'erro' => $e->getMessage()
+                    'erro' => $e->getMessage(),
                 ]);
 
                 throw $e;
@@ -44,7 +44,7 @@ class ProcessarVendaAction
     {
         if ($produto->status !== 'ativo') {
             throw ValidationException::withMessages([
-                'produto' => 'Produto indisponível para venda.'
+                'produto' => 'Produto indisponível para venda.',
             ]);
         }
 
@@ -54,13 +54,13 @@ class ProcessarVendaAction
                     'Quantidade solicitada (%d) maior que estoque disponível (%d).',
                     $quantidade,
                     $produto->estoque
-                )
+                ),
             ]);
         }
 
         if ($quantidade <= 0) {
             throw ValidationException::withMessages([
-                'quantidade' => 'Quantidade deve ser maior que zero.'
+                'quantidade' => 'Quantidade deve ser maior que zero.',
             ]);
         }
     }
@@ -89,7 +89,7 @@ class ProcessarVendaAction
     {
         $produto->decrement('estoque', $quantidade);
 
-        if ($produto->estoque <= $produto->estoque_minimo ?? 10) {
+        if ($produto->estoque <= ($produto->estoque_minimo ?? 10)) {
             $this->notificarEstoqueBaixo($produto);
         }
     }

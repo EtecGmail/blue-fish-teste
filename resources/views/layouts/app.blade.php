@@ -348,6 +348,8 @@
       </div>
     </footer>
 
+    @include('cookie-consent::index')
+
     @yield('scripts')
 </body>
 </html>

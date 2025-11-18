@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Domain\Vendas\Actions\ProcessarVendaAction;
 use App\Http\Requests\VendaStoreRequest;
-use App\Services\VendaService;
 use App\Services\ProdutoService;
+use App\Services\VendaService;
 use Illuminate\Routing\Controller;
 
 class VendaController extends Controller
 {
     protected VendaService $vendaService;
+
     protected ProdutoService $produtoService;
 
     public function __construct(VendaService $vendaService, ProdutoService $produtoService)
@@ -30,9 +31,9 @@ class VendaController extends Controller
     {
         try {
             $validated = $request->validated();
-            
+
             $produto = $this->produtoService->buscarProdutoAtivo($validated['produto_id']);
-            
+
             $venda = $processarVenda->execute(
                 auth()->user(),
                 $produto,
@@ -42,12 +43,12 @@ class VendaController extends Controller
             return redirect()
                 ->route('vendas.index')
                 ->with('sucesso', 'Compra registrada com sucesso!');
-                
+
         } catch (\Illuminate\Validation\ValidationException $e) {
             return back()
                 ->withInput()
                 ->with('erro', $e->getMessage());
-                
+
         } catch (\Exception $e) {
             return back()
                 ->withInput()

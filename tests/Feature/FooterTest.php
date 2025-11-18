@@ -11,11 +11,12 @@ class FooterTest extends TestCase
         $response = $this->get('/');
         $response->assertStatus(200);
 
-        $response->assertSee('Sobre a Bluefish', false);
+        $response->assertSee('Bluefish', false);
+        $response->assertSee('Links úteis', false);
         $response->assertSee('Contato', false);
-        $response->assertSee('Redes Sociais', false);
+        $response->assertSee('Redes sociais', false);
 
-        $response->assertSee('(11) 1234-5678', false);
+        $response->assertSee('CNPJ: 00.000.000/0001-00', false);
         $response->assertSee('contato@bluefish.com', false);
 
         $response->assertSee('Política de Privacidade', false);

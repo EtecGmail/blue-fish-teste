@@ -28,7 +28,7 @@ class VendaStoreRequest extends FormRequest
                 'integer',
                 'exists:produtos,id',
                 Rule::exists('produtos', 'id')->where(function ($query) {
-                    $query->where('ativo', true);
+                    $query->where('status', 'ativo');
                 }),
             ],
             'quantidade' => ['required', 'integer', 'min:1', 'max:999'],

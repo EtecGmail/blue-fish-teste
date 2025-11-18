@@ -2,14 +2,14 @@
 
 namespace App\Exceptions;
 
-use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Throwable;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Illuminate\Auth\AuthenticationException;
-use Illuminate\Auth\Access\AuthorizationException;
+use Throwable;
 
 class Handler extends ExceptionHandler
 {
@@ -80,7 +80,7 @@ class Handler extends ExceptionHandler
     protected function handleModelNotFoundException($request, ModelNotFoundException $exception)
     {
         $modelo = class_basename($exception->getModel());
-        
+
         if ($request->expectsJson()) {
             return response()->json([
                 'sucesso' => false,

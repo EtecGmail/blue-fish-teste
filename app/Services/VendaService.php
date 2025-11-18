@@ -2,37 +2,31 @@
 
 namespace App\Services;
 
-use App\Models\Produto;
-use App\Models\Venda;
 use App\Models\User;
+use App\Models\Venda;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
 /**
  * Serviço de Vendas - Responsável pela lógica de negócio relacionada a vendas
- * 
+ *
  * Principios SOLID aplicados:
  * - Single Responsibility Principle (SRP): Classe tem uma única razão para mudar
  * - Dependency Inversion Principle (DIP): Depende de abstrações, não de implementações concretas
- * 
- * @package App\Services
  */
 class VendaService
 {
-
     /**
      * Cancela uma venda e restaura o estoque
      *
-     * @param Venda $venda
-     * @return bool
      * @throws \Exception
      */
     public function cancelarVenda(Venda $venda): bool
     {
         if ($venda->status === 'cancelado') {
             throw ValidationException::withMessages([
-                'venda' => 'Venda já está cancelada.'
+                'venda' => 'Venda já está cancelada.',
             ]);
         }
 
@@ -40,10 +34,10 @@ class VendaService
             try {
                 // Restaurar estoque
                 $venda->produto->increment('estoque', $venda->quantidade);
-                
+
                 // Atualizar status
                 $venda->update(['status' => 'cancelado']);
-                
+
                 // Registrar log
                 Log::info('Venda cancelada', [
                     'venda_id' => $venda->id,
@@ -51,15 +45,15 @@ class VendaService
                     'quantidade_restaurada' => $venda->quantidade,
                     'estoque_atual' => $venda->produto->estoque,
                 ]);
-                
+
                 return true;
-                
+
             } catch (\Exception $e) {
                 Log::error('Erro ao cancelar venda', [
                     'venda_id' => $venda->id,
-                    'erro' => $e->getMessage()
+                    'erro' => $e->getMessage(),
                 ]);
-                
+
                 throw $e;
             }
         });
@@ -67,36 +61,32 @@ class VendaService
 
     /**
      * Obtém estatísticas de vendas
-     *
-     * @param User|null $user
-     * @param array $filtros
-     * @return array
      */
     public function obterEstatisticas(?User $user = null, array $filtros = []): array
     {
         $query = Venda::query();
-        
+
         if ($user) {
             $query->where('user_id', $user->id);
         }
-        
+
         // Aplicar filtros adicionais
-        if (!empty($filtros['data_inicio'])) {
+        if (! empty($filtros['data_inicio'])) {
             $query->where('created_at', '>=', $filtros['data_inicio']);
         }
-        
-        if (!empty($filtros['data_fim'])) {
+
+        if (! empty($filtros['data_fim'])) {
             $query->where('created_at', '<=', $filtros['data_fim']);
         }
-        
-        if (!empty($filtros['status'])) {
+
+        if (! empty($filtros['status'])) {
             $query->where('status', $filtros['status']);
         }
-        
+
         return [
             'usuarios' => \App\Models\User::count(),
             'produtos' => \App\Models\Produto::count(),
-            'contatos' => (\App\Models\Contato::count() ?? 0),
+            'contatos' => \App\Models\Contato::count(),
             'vendas' => $query->count(),
             'faturamento' => $query->sum('valor_total'),
             'total_vendas' => $query->count(),
@@ -112,27 +102,24 @@ class VendaService
     /**
      * Obtém as vendas de um usuário específico
      *
-     * @param User $user
-     * @param int $limite
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function obterVendasPorUsuario(User $user, int $limite = null)
+    public function obterVendasPorUsuario(User $user, ?int $limite = null)
     {
         $query = Venda::with('produto')
             ->where('user_id', $user->id)
             ->latest();
-            
+
         if ($limite) {
             $query->limit($limite);
         }
-        
+
         return $query->get();
     }
 
     /**
      * Obtém os produtos mais vendidos
      *
-     * @param int $limite
      * @return \Illuminate\Support\Collection
      */
     public function obterProdutosMaisVendidos(int $limite = 5)
@@ -143,8 +130,9 @@ class VendaService
             ->groupBy('produtos.id', 'produtos.nome')
             ->orderByDesc('quantidade_total')
             ->limit($limite)
+            ->toBase()
             ->get()
-            ->map(function ($item) {
+            ->map(function (\stdClass $item): array {
                 return [
                     'nome' => $item->nome,
                     'quantidade' => (int) $item->quantidade_total,
@@ -156,7 +144,6 @@ class VendaService
     /**
      * Obtém as vendas mais recentes
      *
-     * @param int $limite
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public function obterVendasRecentes(int $limite = 5)

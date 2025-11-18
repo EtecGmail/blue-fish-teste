@@ -21,7 +21,7 @@ class ProdutoController extends Controller
     {
         $produtos = $this->produtoService->obterProdutosAtivos([
             'ordenar_por' => 'nome',
-            'direcao' => 'asc'
+            'direcao' => 'asc',
         ]);
 
         return view('produtos.index', compact('produtos'));
@@ -34,9 +34,9 @@ class ProdutoController extends Controller
     {
         try {
             $produto = $this->produtoService->buscarProdutoAtivo($id);
-            
+
             return view('produtos.show', compact('produto'));
-            
+
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return redirect()
                 ->route('produtos.index')

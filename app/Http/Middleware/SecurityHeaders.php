@@ -29,9 +29,6 @@ class SecurityHeaders
 
     /**
      * Adiciona headers de segurança à resposta
-     *
-     * @param Response $response
-     * @return void
      */
     private function addSecurityHeaders(Response $response): void
     {
@@ -88,9 +85,6 @@ class SecurityHeaders
 
     /**
      * Determina se deve prevenir cache baseado na resposta
-     *
-     * @param Response $response
-     * @return bool
      */
     private function shouldPreventCache(Response $response): bool
     {
@@ -102,7 +96,7 @@ class SecurityHeaders
         ];
 
         $contentType = $response->headers->get('Content-Type', '');
-        
+
         foreach ($sensitiveContentTypes as $type) {
             if (str_contains($contentType, $type)) {
                 return true;

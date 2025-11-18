@@ -3,23 +3,18 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 /**
  * Form Request para autenticação de usuários
- * 
+ *
  * Principios SOLID aplicados:
  * - Single Responsibility Principle (SRP): Classe tem apenas uma responsabilidade de validação
  * - Open/Closed Principle (OCP): Aberta para extensão através de novas regras
- * 
- * @package App\Http\Requests
  */
 class LoginRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
-     *
-     * @return bool
      */
     public function authorize(): bool
     {
@@ -39,18 +34,18 @@ class LoginRequest extends FormRequest
                 'string',
                 'email',
                 'max:255',
-                'lowercase'
+                'lowercase',
             ],
             'password' => [
                 'required',
                 'string',
                 'min:6',
-                'max:255'
+                'max:255',
             ],
             'remember' => [
                 'nullable',
-                'boolean'
-            ]
+                'boolean',
+            ],
         ];
     }
 
@@ -81,21 +76,19 @@ class LoginRequest extends FormRequest
         return [
             'email' => 'e-mail',
             'password' => 'senha',
-            'remember' => 'lembrar-me'
+            'remember' => 'lembrar-me',
         ];
     }
 
     /**
      * Prepare the data for validation.
-     *
-     * @return void
      */
     protected function prepareForValidation(): void
     {
         // Sanitizar e-mail
         if ($this->has('email')) {
             $this->merge([
-                'email' => trim(strtolower($this->input('email')))
+                'email' => trim(strtolower($this->input('email'))),
             ]);
         }
     }
@@ -103,8 +96,7 @@ class LoginRequest extends FormRequest
     /**
      * Configure the validator instance.
      *
-     * @param \Illuminate\Validation\Validator $validator
-     * @return void
+     * @param  \Illuminate\Validation\Validator  $validator
      */
     public function withValidator($validator): void
     {

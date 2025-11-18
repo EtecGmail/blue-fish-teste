@@ -3,6 +3,7 @@
 @import './base.css';
 @import './components/forms.css';
 @import './components/alerts.css';
+@import './components/cookie-consent.css';
 @import './pages/home.css';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';

@@ -2,13 +2,22 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
+/**
+ * @property int $id
+ * @property string $nome
+ * @property string|null $descricao
+ * @property float $preco
+ * @property int|null $estoque
+ * @property string $status
+ * @property int|null $estoque_minimo
+ */
 class Produto extends Model
 {
     use HasFactory;
@@ -67,6 +76,6 @@ class Produto extends Model
             return asset($imagem);
         }
 
-        return asset('storage/' . ltrim($imagem, '/'));
+        return asset('storage/'.ltrim($imagem, '/'));
     }
 }
